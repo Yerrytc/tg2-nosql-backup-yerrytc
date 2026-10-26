@@ -21,6 +21,10 @@ La recuperacion descarga el respaldo, lo descifra, restaura los documentos en el
 
 `backup.yml` esta programado con `cron: '17 10 * * *'`: GitHub Actions lo ejecuta solo todos los dias a las 10:17 UTC (05:17 hora de Peru), sin intervencion manual. Tambien puede lanzarse a demanda con `workflow_dispatch`. Cada ejecucion genera un archivo `productos-AAAAMMDD-HHMMSS.json.gz.enc` nuevo en el contenedor `backups`, y la politica de ciclo de vida elimina los que superan los 30 dias. El flujo se probo de forma manual (ver Respaldo en las evidencias).
 
+Programacion del respaldo en `backup.yml` (lineas 3 a 6 resaltadas: `schedule` con `cron` y `workflow_dispatch`):
+
+![paso32](evidencias/paso32_backup_programado_cron.png)
+
 ## Arquitectura
 
 - `src/ProductosApi`: API minima y pagina web para administrar productos en Cosmos DB.
