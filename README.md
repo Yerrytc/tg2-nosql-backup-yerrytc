@@ -142,3 +142,11 @@ Restauracion desde el ultimo respaldo, verificacion y aplicacion con los 6 produ
 ![paso29](evidencias/paso29_actions_restore_log.png)
 
 ![paso28](evidencias/paso28_app_restaurada.png)
+
+### Repositorio publico y automatizacion
+
+Repositorio publico con el ultimo commit validado y lista de workflows ejecutados.
+
+![paso30](evidencias/paso30_repositorio_publico.png)
+
+![paso31](evidencias/paso31_actions_workflows.png)
