@@ -1,0 +1,20 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet build src/ProductosApi/ProductosApi.csproj -c Release
+      - run: dotnet build src/BackupTool/BackupTool.csproj -c Release
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform -chdir=infra init -backend=false
+      - run: terraform -chdir=infra validate

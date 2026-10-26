@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos NoSQL</title>
+    <style>
+        body { font-family: Segoe UI, Arial, sans-serif; background: #eef3f0; margin: 0; color: #1d2b25; }
+        main { max-width: 760px; margin: 36px auto; padding: 0 16px; }
+        h1 { margin-bottom: 4px; }
+        p.sub { margin-top: 0; color: #55665e; }
+        form { display: flex; gap: 8px; margin: 20px 0 10px; flex-wrap: wrap; }
+        input { padding: 10px 12px; border: 1px solid #b9c7bf; border-radius: 6px; font-size: 15px; }
+        input.n { flex: 2; min-width: 160px; }
+        input.p, input.s { width: 100px; }
+        button { padding: 10px 16px; border: 0; border-radius: 6px; background: #0f7b4f; color: #fff; font-size: 15px; cursor: pointer; }
+        button.sec { background: #3f5a4d; }
+        button.del { background: #c0392b; padding: 6px 10px; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; margin-top: 14px; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e1e8e4; }
+        th { background: #dbe7e0; }
+        footer { margin-top: 20px; font-size: 13px; color: #55665e; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Productos NoSQL</h1>
+        <p class="sub">Aplicacion con Azure Cosmos DB y estrategia de respaldo automatizada</p>
+        <form id="f">
+            <input class="n" type="text" id="n" placeholder="Nombre del producto" autocomplete="off">
+            <input class="p" type="number" id="p" placeholder="Precio" step="0.01" min="0">
+            <input class="s" type="number" id="s" placeholder="Stock" min="0">
+            <button type="submit">Agregar</button>
+            <button type="button" class="sec" id="ej">Cargar ejemplos</button>
+        </form>
+        <table>
+            <thead><tr><th>Producto</th><th>Precio</th><th>Stock</th><th></th></tr></thead>
+            <tbody id="l"></tbody>
+        </table>
+        <footer id="pie"></footer>
+    </main>
+    <script>
+        const l = document.getElementById("l");
+        const pie = document.getElementById("pie");
+
+        async function cargar() {
+            const d = await (await fetch("/api/productos")).json();
+            l.innerHTML = "";
+            d.forEach(x => {
+                const tr = document.createElement("tr");
+                const a = document.createElement("td");
+                a.textContent = x.nombre;
+                const b = document.createElement("td");
+                b.textContent = "S/ " + Number(x.precio).toFixed(2);
+                const c = document.createElement("td");
+                c.textContent = x.stock;
+                const e = document.createElement("td");
+                const bt = document.createElement("button");
+                bt.className = "del";
+                bt.textContent = "Eliminar";
+                bt.onclick = async () => {
+                    await fetch("/api/productos/" + x.id, { method: "DELETE" });
+                    cargar();
+                };
+                e.append(bt);
+                tr.append(a, b, c, e);
+                l.append(tr);
+            });
+            const h = await (await fetch("/health")).json();
+            pie.textContent = "Base de datos: " + h.base_datos + " | Productos guardados: " + h.productos;
+        }
+
+        document.getElementById("f").onsubmit = async ev => {
+            ev.preventDefault();
+            const n = document.getElementById("n");
+            if (!n.value.trim()) return;
+            await fetch("/api/productos", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nombre: n.value, precio: Number(document.getElementById("p").value || 0), stock: Number(document.getElementById("s").value || 0) })
+            });
+            ev.target.reset();
+            cargar();
+        };
+
+        document.getElementById("ej").onclick = async () => {
+            await fetch("/api/productos/ejemplos", { method: "POST" });
+            cargar();
+        };
+
+        cargar();
+    </script>
+</body>
+</html>
