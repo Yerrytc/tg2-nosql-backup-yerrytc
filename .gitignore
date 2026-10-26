@@ -1,0 +1,15 @@
+bin/
+obj/
+publicar/
+.vs/
+.terraform/
+*.tfstate
+*.tfstate.*
+*.user
+appsettings.Development.json
+clips/
+video/
+*.mp4
+Informe_*.docx
+Informe_*.pdf
+Portada_*.png
