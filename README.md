@@ -17,6 +17,10 @@ La estrategia combina tres capas:
 
 La recuperacion descarga el respaldo, lo descifra, restaura los documentos en el contenedor indicado y verifica que la cantidad coincida con la del manifiesto.
 
+### Respaldo diario automatico
+
+`backup.yml` esta programado con `cron: '17 10 * * *'`: GitHub Actions lo ejecuta solo todos los dias a las 10:17 UTC (05:17 hora de Peru), sin intervencion manual. Tambien puede lanzarse a demanda con `workflow_dispatch`. Cada ejecucion genera un archivo `productos-AAAAMMDD-HHMMSS.json.gz.enc` nuevo en el contenedor `backups`, y la politica de ciclo de vida elimina los que superan los 30 dias. El flujo se probo de forma manual (ver Respaldo en las evidencias).
+
 ## Arquitectura
 
 - `src/ProductosApi`: API minima y pagina web para administrar productos en Cosmos DB.
